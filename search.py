@@ -11,6 +11,8 @@
 # Student side autograding was added by Brad Miller, Nick Hay, and
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
+#TODO: remove nguyenpanda
+from nguyenpanda.swan import color
 
 """
 In search.py, you will implement generic search algorithms which are called by
@@ -87,6 +89,10 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
+    # TODO: Problem 1
+    print (color["r"] + "Start:", problem.getStartState())
+    print (color["r"] + "Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    print (color["r"] + "Start's successors:", problem.getSuccessors(problem.getStartState()))
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
