@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Pacman",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/pacman.py",
+            "args": [
+                "-l", "tinyMaze",
+                "-p", "SearchAgent"
+            ],
+            "console": "integratedTerminal"
+        }
+    ]
+}
+
