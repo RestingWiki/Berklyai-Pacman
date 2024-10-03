@@ -12,14 +12,20 @@
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
 #TODO: remove nguyenpanda
-from nguyenpanda.swan import color
-
 """
 In search.py, you will implement generic search algorithms which are called by
 Pacman agents (in searchAgents.py).
 """
 
 import util
+from util import *
+# from searchAgents import PositionSearchProblem
+from nguyenpanda.swan import color
+class Node:
+    def __init__(self, prev , current, direction):
+        self.prev: Node = prev
+        self.current = current
+        self.direction  = direction
 
 class SearchProblem:
     """
@@ -87,18 +93,127 @@ def depthFirstSearch(problem):
     print "Start:", problem.getStartState()
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
+    
+    Return the Direction towards the food: ["North", "South:, "East", "West"]
     """
     "*** YOUR CODE HERE ***"
     # TODO: Problem 1
+    print (color["b"] + "Search function: Depth First Search")
     print (color["r"] + "Start:", problem.getStartState())
-    print (color["r"] + "Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    print (color["r"] +"Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print (color["r"] + "Start's successors:", problem.getSuccessors(problem.getStartState()))
-    util.raiseNotDefined()
+    
+    start_state = problem.getStartState()
+    startNode = Node(None, start_state, None)
+    neighbours = problem.getSuccessors(start_state)  
+    
+    
+    # This basically just create a reversed LinkedList
+    # class Node:
+    #   self.prev = AnotherNode
+    #   self.current = (x, y)
+    #   self.direction = "North"
+    #
+    
+    # For the initial neighbour
+    stack = Stack()
+    stack.push(startNode)
+    goal = None
+    
+    visited = set()  # Contains tupple of visited positions on the board
+    # Perform DFS
+    while not stack.isEmpty():
+        currentNode: Node = stack.pop()
+        
+        current_state = currentNode.current
+        
+        if current_state in visited:
+            continue
+        
+        #TODO add premature break when the goal is reached
+        if problem.isGoalState(current_state):
+            goal = currentNode
+            break
+        
+        visited.add(current_state)
+        
+        neighbours = problem.getSuccessors(current_state)
+        for n in neighbours:
+            pos, dir, _ = n
+            node = Node(current=pos, direction=dir, prev=currentNode)
+            stack.push(node) 
+        
 
+    # Rebuilding the path
+    path = []
+    while goal.prev != None:
+        path.append(goal.direction)
+        goal= goal.prev
+    path.reverse()
+    print(color.reset)
+    print(color["g"])   
+    return path 
+    
+    
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+        # TODO: Problem 1
+    print (color["b"] + "Search function: Breadth First Search")
+    print (color["r"] + "Start:", problem.getStartState())
+    print (color["r"] +"Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    print (color["r"] + "Start's successors:", problem.getSuccessors(problem.getStartState()))
+    
+    start_state = problem.getStartState()
+    startNode = Node(None, start_state, None)
+    neighbours = problem.getSuccessors(start_state)  
+    
+    
+    # This basically just create a reversed LinkedList
+    # class Node:
+    #   self.prev = AnotherNode
+    #   self.current = (x, y)
+    #   self.direction = "North"
+    #
+    
+    # For the initial neighbour
+    queue = Queue()
+    queue.push(startNode)
+    goal = None
+    
+    visited = set()  # Contains tupple of visited positions on the board
+    # Perform DFS
+    while not queue.isEmpty():
+        currentNode: Node = queue.pop()
+        
+        current_state = currentNode.current
+        
+        if current_state in visited:
+            continue
+        
+        #TODO add premature break when the goal is reached
+        if problem.isGoalState(current_state):
+            goal = currentNode
+            break
+        
+        visited.add(current_state)
+        
+        neighbours = problem.getSuccessors(current_state)
+        for n in neighbours:
+            pos, dir, _ = n
+            node = Node(current=pos, direction=dir, prev=currentNode)
+            queue.push(node) 
+        
+
+    # Rebuilding the path
+    path = []
+    while goal.prev != None:
+        path.append(goal.direction)
+        goal= goal.prev
+    path.reverse()
+    print(color.reset)
+    print(color["g"])   
+    return path 
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
