@@ -119,13 +119,23 @@ class SearchAgent(Agent):
       
         
         #TODO: delete debug
-        print(color["p"])
+        print(color["b"] + "="*30)
+        print(color["m"],end="")
+        nodes_list = []
         while not (last_node.prev is None):
             if isinstance(last_node, PriorityNode):
-                print(f"Pos: {last_node.current} | Direction: {last_node.direction} | Cost: {last_node.cost}")
+                temp = f"Pos: {last_node.current} | Direction: {last_node.direction} | Cost: {last_node.cost}"
+                nodes_list.append(temp)
             elif isinstance(last_node, Node):
-                print(f"Pos: {last_node.current} | Direction: {last_node.direction}")
-        print(color.reset)        
+                temp = f"Pos: {last_node.current} | Direction: {last_node.direction}"
+                nodes_list.append(temp)
+            last_node = last_node.prev
+            
+        for node in reversed(nodes_list):
+            print(node)
+        
+        print(color["b"] + "="*30)
+        print(color["g"])        
                 
                 
         totalCost = problem.getCostOfActions(self.actions)
@@ -266,7 +276,19 @@ class StayWestSearchAgent(SearchAgent):
         self.searchType = lambda state: PositionSearchProblem(state, costFn)
 
 def manhattanHeuristic(position, problem, info={}):
-    "The Manhattan distance heuristic for a PositionSearchProblem"
+    """
+    Calculates the Manhattan distance heuristic for a PositionSearchProblem.
+    
+    Args:
+        position (tuple): The current position in the grid as (x, y).
+        problem (PositionSearchProblem): The search problem instance, which contains the goal 
+                                         position (problem.goal).
+        info (dict, optional): no idea 
+
+    Returns:
+        int: The Manhattan distance between the current position and the goal position.
+    """
+    
     xy1 = position
     xy2 = problem.goal
     return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
