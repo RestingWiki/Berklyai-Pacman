@@ -215,22 +215,22 @@ def breadthFirstSearch(problem):
     goal = None  
     
     visited = set()  # Contains tupple of visited positions on the board
-    # Perform DFS
+    # Perform BFS
     while not queue.isEmpty():
         currentNode: Node = queue.pop()
         
-        current_state = currentNode.current
+        current_pos = currentNode.current
         
-        if current_state in visited:
+        if current_pos in visited:
             continue
         
-        if problem.isGoalState(current_state):
+        if problem.isGoalState(current_pos):
             goal = currentNode
             break
         
-        visited.add(current_state)
+        visited.add(current_pos)
         
-        neighbours = problem.getSuccessors(current_state)
+        neighbours = problem.getSuccessors(current_pos)
         for n in neighbours:
             pos, dir, _ = n
             node = Node(current=pos, direction=dir, prev=currentNode)
@@ -267,31 +267,31 @@ def uniformCostSearch(problem):
     #
     
     # For the initial neighbour
-    queue = PriorityQueue() # <--------- replaced Stack with Queue
-    queue.push(item=startNode, priority=1)
+    queue = PriorityQueue()
+    queue.push(item=startNode, priority=startNode.cost)
     goal = None  
     
     visited = set()  # Contains tupple of visited positions on the board
-    # Perform DFS
+    # Perform UCS
     while not queue.isEmpty():
-        currentNode: Node = queue.pop()
+        currentNode: PriorityNode = queue.pop()
         
-        current_state = currentNode.current
+        current_pos = currentNode.current
         
-        if current_state in visited:
+        if current_pos in visited:
             continue
         
-        if problem.isGoalState(current_state):
+        if problem.isGoalState(current_pos):
             goal = currentNode
             break
         
-        visited.add(current_state)
+        visited.add(current_pos)
         
-        neighbours = problem.getSuccessors(current_state)
+        neighbours = problem.getSuccessors(current_pos)
         for n in neighbours:
-            pos, dir, _ = n
-            node = Node(current=pos, direction=dir, prev=currentNode)
-            queue.push(node) 
+            pos, dir, cost = n  # <-------------- Cost is used here compared to BFS and DFS
+            node = PriorityNode(current=pos, direction=dir, prev=currentNode,cost=cost)
+            queue.push(item=node, priority=cost) 
         
 
     # Rebuilding the path
