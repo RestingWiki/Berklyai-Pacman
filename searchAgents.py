@@ -40,7 +40,10 @@ from game import Actions
 import util
 import time
 import search
-
+#TODO: Delete debug
+from search import Node
+from search import PriorityNode
+from nguyenpanda.swan import color
 class GoWestAgent(Agent):
     "An agent that goes West until it can't."
 
@@ -112,7 +115,19 @@ class SearchAgent(Agent):
         if self.searchFunction == None: raise Exception("No search function provided for SearchAgent")
         starttime = time.time()
         problem = self.searchType(state) # Makes a new search problem
-        self.actions  = self.searchFunction(problem) # Find a path
+        self.actions, last_node  = self.searchFunction(problem) # Find a path
+      
+        
+        #TODO: delete debug
+        print(color["p"])
+        while not (last_node.prev is None):
+            if isinstance(last_node, PriorityNode):
+                print(f"Pos: {last_node.current} | Direction: {last_node.direction} | Cost: {last_node.cost}")
+            elif isinstance(last_node, Node):
+                print(f"Pos: {last_node.current} | Direction: {last_node.direction}")
+        print(color.reset)        
+                
+                
         totalCost = problem.getCostOfActions(self.actions)
         print('Path found with total cost of %d in %.1f seconds' % (totalCost, time.time() - starttime))
         if '_expanded' in dir(problem): print('Search nodes expanded: %d' % problem._expanded)
