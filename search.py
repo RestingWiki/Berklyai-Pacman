@@ -171,15 +171,16 @@ def depthFirstSearch(problem):
 
     # Rebuilding the path
     path = []
+    ret_node = goal
     while goal.prev != None:
         path.append(goal.direction)
         goal= goal.prev
     path.reverse()
     
-    # TODO: delete nguyenpdanda
+    # TODO: delete ret_node
     print(color.reset)
     print(color["g"])   
-    return path 
+    return path, ret_node
     
     
 def breadthFirstSearch(problem):
@@ -239,18 +240,20 @@ def breadthFirstSearch(problem):
 
     # Rebuilding the path
     path = []
+    ret_node = goal
     while goal.prev != None:
         path.append(goal.direction)
         goal= goal.prev
     path.reverse()
     print(color.reset)
     print(color["g"])   
-    return path 
+    # TODO: delete ret_node
+    return path, ret_node 
 
 def uniformCostSearch(problem):
     "*** YOUR CODE HERE ***"
     # TODO: Problem 3
-    print (color["b"] + "Search function: Unifor Cost Search")
+    print (color["r"] + "Search function: Uniform Cost Search")
     print (color["r"] + "Start:", problem.getStartState())
     print (color["r"] +"Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print (color["r"] + "Start's successors:", problem.getSuccessors(problem.getStartState()))
@@ -296,13 +299,15 @@ def uniformCostSearch(problem):
 
     # Rebuilding the path
     path = []
+    ret_node = goal
     while goal.prev != None:
         path.append(goal.direction)
         goal= goal.prev
     path.reverse()
     print(color.reset)
     print(color["g"])   
-    return path 
+    # TODO: delete ret_node
+    return path, ret_node 
 
 def nullHeuristic(state, problem=None):
     """
