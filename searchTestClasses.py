@@ -120,7 +120,7 @@ class GraphSearch(SearchProblem):
                     total_cost += cost
                     match = True
             if not match:
-                print 'invalid action sequence'
+                print ('invalid action sequence')
                 sys.exit(1)
         return total_cost
 
@@ -143,8 +143,8 @@ def parseHeuristic(heuristicText):
     for line in heuristicText.split('\n'):
         tokens = line.split()
         if len(tokens) != 2:
-            print "Broken heuristic:"
-            print '"""%s"""' % graph_text
+            print ("Broken heuristic:")
+            print ('"""%s"""' % graph_text)
             raise Exception("GraphSearch heuristic specification broken:" + l)
         state, h = tokens
         heuristic[state] = float(h)

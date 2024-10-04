@@ -22,11 +22,27 @@ from util import *
 # from searchAgents import PositionSearchProblem
 from nguyenpanda.swan import color
 class Node:
+    """
+    A class to represent a node in the search problem.
+
+    Attributes:
+        prev (Node): The previous node in the path.
+        current (tuple): A tuple (x, y) representing the current position of the node in the maze.
+        direction (str): The direction taken to move from the previous node to the current node.
+                         Possible values could be 'North', 'South', 'East', or 'West'.
+
+    Example:
+        prev_node = Node(None, (1, 1), None)
+        
+        current_node = Node(prev_node, (1, 2), 'North')
+        
+        the prev_node(1, 1) goes 'North' to reach current_node(1, 2)
+    """
     def __init__(self, prev , current, direction):
         self.prev: Node = prev
-        self.current = current
-        self.direction  = direction
-
+        self.current = current  # (int, int) the position of a cell/neighbour in the maze
+        self.direction  = direction # South | West |...
+        
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -94,7 +110,11 @@ def depthFirstSearch(problem):
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     
-    Return the Direction towards the food: ["North", "South:, "East", "West"]
+    Args:
+        problem (PositionSearchProblem): The search problem instance, for Q1 it is an instance of PositionSearchProblem
+
+    Returns:
+        list: A list of directions that lead to the goal ["North", "South", "East", "West"].
     """
     "*** YOUR CODE HERE ***"
     # TODO: Problem 1
@@ -103,10 +123,6 @@ def depthFirstSearch(problem):
     print (color["r"] +"Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print (color["r"] + "Start's successors:", problem.getSuccessors(problem.getStartState()))
     
-    start_state = problem.getStartState()
-    startNode = Node(None, start_state, None)
-    neighbours = problem.getSuccessors(start_state)  
-    
     
     # This basically just create a reversed LinkedList
     # class Node:
@@ -114,32 +130,34 @@ def depthFirstSearch(problem):
     #   self.current = (x, y)
     #   self.direction = "North"
     #
-    
+    start_state = problem.getStartState()  # (int, int) 
+    startNode = Node(prev=None, current=start_state, direction=None)
+    neighbours = problem.getSuccessors(start_state)  
+        
     # For the initial neighbour
-    stack = Stack()
+    stack = Stack() # util.py
     stack.push(startNode)
     goal = None
     
-    visited = set()  # Contains tupple of visited positions on the board
+    visited = set()  # Contains tupple of visited positions
     # Perform DFS
     while not stack.isEmpty():
         currentNode: Node = stack.pop()
         
-        current_state = currentNode.current
+        current_pos = currentNode.current # (int , int)
         
-        if current_state in visited:
+        if current_pos in visited:
             continue
         
-        #TODO add premature break when the goal is reached
-        if problem.isGoalState(current_state):
+        if problem.isGoalState(current_pos):
             goal = currentNode
             break
         
-        visited.add(current_state)
+        visited.add(current_pos)
         
-        neighbours = problem.getSuccessors(current_state)
+        neighbours = problem.getSuccessors(current_pos)
         for n in neighbours:
-            pos, dir, _ = n
+            pos, dir, _ = n # position, direction, cost(ignored)
             node = Node(current=pos, direction=dir, prev=currentNode)
             stack.push(node) 
         
@@ -150,15 +168,24 @@ def depthFirstSearch(problem):
         path.append(goal.direction)
         goal= goal.prev
     path.reverse()
+    
+    # TODO: delete nguyenpdanda
     print(color.reset)
     print(color["g"])   
     return path 
     
     
 def breadthFirstSearch(problem):
-    """Search the shallowest nodes in the search tree first."""
+    """
+    Search the shallowest nodes in the search tree first.
+    Args:
+        problem (PositionSearchProblem): The search problem instance, for Q1 it is an instance of PositionSearchProblem
+
+    Returns:
+        list: A list of directions that lead to the goal ["North", "South", "East", "West"].
+    """
     "*** YOUR CODE HERE ***"
-        # TODO: Problem 1
+    # TODO: Problem 2
     print (color["b"] + "Search function: Breadth First Search")
     print (color["r"] + "Start:", problem.getStartState())
     print (color["r"] +"Is the start a goal?", problem.isGoalState(problem.getStartState()))
@@ -168,7 +195,7 @@ def breadthFirstSearch(problem):
     startNode = Node(None, start_state, None)
     neighbours = problem.getSuccessors(start_state)  
     
-    
+    # A custom made class
     # This basically just create a reversed LinkedList
     # class Node:
     #   self.prev = AnotherNode
@@ -177,9 +204,9 @@ def breadthFirstSearch(problem):
     #
     
     # For the initial neighbour
-    queue = Queue()
+    queue = Queue() # <--------- replaced Stack with Queue
     queue.push(startNode)
-    goal = None
+    goal = None  
     
     visited = set()  # Contains tupple of visited positions on the board
     # Perform DFS
@@ -191,7 +218,6 @@ def breadthFirstSearch(problem):
         if current_state in visited:
             continue
         
-        #TODO add premature break when the goal is reached
         if problem.isGoalState(current_state):
             goal = currentNode
             break
