@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python Debugger: Pacman",
+            "name": "Python Debugger: Pacman (tinyMaze)",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/pacman.py",
@@ -11,7 +11,20 @@
                 "-p", "SearchAgent"
             ],
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Python Debugger: Pacman (bigMaze with A* and Manhattan Heuristic)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/pacman.py",
+            "args": [
+                "-l", "bigMaze",
+                "-z", ".5",
+                "-p", "SearchAgent",
+                "-a", "fn=astar,heuristic=manhattanHeuristic",
+                "--frameTime", "0"
+            ],
+            "console": "integratedTerminal"
         }
     ]
 }
-

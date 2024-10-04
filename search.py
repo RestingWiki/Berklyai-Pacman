@@ -322,15 +322,76 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         
     """
     "*** YOUR CODE HERE ***"
+    
+    # TODO: Problem 4
+    print (color["r"] + "Search function: aStar Search")
+    print (color["r"] + "Start:", problem.getStartState())
+    print (color["r"] +"Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    print (color["r"] + "Start's successors:", problem.getSuccessors(problem.getStartState()))
+    
     from searchAgents import manhattanHeuristic
     from searchAgents import euclideanHeuristic
     
     if heuristic is manhattanHeuristic:
+        # print(h_func(problem.getStartState(), problem))
+        heuristic = euclideanHeuristic
         print("Manhattan")
     elif heuristic is euclideanHeuristic:
         print("Euclidian")  
+        
+    start_state = problem.getStartState()
+    startNode = PriorityNode(None, start_state, None)
     
-    util.raiseNotDefined()
+    # A custom made class
+    # This basically just create a reversed LinkedList
+    # class Node:
+    #   self.prev = AnotherNode
+    #   self.current = (x, y)
+    #   self.direction = "North"
+    #
+    
+    # For the initial neighbour
+    queue = PriorityQueue()
+    queue.push(item=startNode, priority=startNode.cost)
+    goal = None  
+    
+    visited = set()  # Contains tupple of visited positions on the board
+    # Perform A*
+    while not queue.isEmpty():
+        currentNode: PriorityNode = queue.pop()
+        
+        current_pos = currentNode.current
+        
+        if current_pos in visited:
+            continue
+        
+        if problem.isGoalState(current_pos):
+            goal = currentNode
+            break
+        
+        visited.add(current_pos)
+        
+        neighbours = problem.getSuccessors(current_pos)
+        for n in neighbours:
+            pos, dir, cost = n  # <-------------- Cost is used here compared to BFS and DFS
+            h_value = heuristic(pos, problem)
+            node = PriorityNode(current=pos, direction=dir, prev=currentNode,cost=cost + h_value)
+            queue.push(item=node, priority=cost) 
+        
+
+    # Rebuilding the path
+    path = []
+    ret_node = goal
+    while goal.prev != None:
+        path.append(goal.direction)
+        goal= goal.prev
+    path.reverse()
+    print(color.reset)
+    print(color["g"])   
+    # TODO: delete ret_node
+    return path, ret_node 
+
+    
 
 
 # Abbreviations
