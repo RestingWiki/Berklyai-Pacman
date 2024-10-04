@@ -317,8 +317,19 @@ def nullHeuristic(state, problem=None):
     return 0
 
 def aStarSearch(problem, heuristic=nullHeuristic):
-    """Search the node that has the lowest combined cost and heuristic first."""
+    """
+        Search the node that has the lowest combined cost and heuristic first.
+        
+    """
     "*** YOUR CODE HERE ***"
+    from searchAgents import manhattanHeuristic
+    from searchAgents import euclideanHeuristic
+    
+    if heuristic is manhattanHeuristic:
+        print("Manhattan")
+    elif heuristic is euclideanHeuristic:
+        print("Euclidian")  
+    
     util.raiseNotDefined()
 
 
