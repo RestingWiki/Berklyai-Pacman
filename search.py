@@ -42,7 +42,13 @@ class Node:
         self.prev: Node = prev
         self.current = current  # (int, int) the position of a cell/neighbour in the maze
         self.direction  = direction # South | West |...
+
+class PriorityNode(Node):
+    def __init__(self, prev, current, direction, cost=-1):
+        super().__init__(prev, current, direction)
+        self.cost: int = cost
         
+     
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -107,7 +113,9 @@ def depthFirstSearch(problem):
     understand the search problem that is being passed in:
 
     print "Start:", problem.getStartState()
+    
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
+    
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     
     Args:
@@ -132,7 +140,6 @@ def depthFirstSearch(problem):
     #
     start_state = problem.getStartState()  # (int, int) 
     startNode = Node(prev=None, current=start_state, direction=None)
-    neighbours = problem.getSuccessors(start_state)  
         
     # For the initial neighbour
     stack = Stack() # util.py
@@ -179,7 +186,7 @@ def breadthFirstSearch(problem):
     """
     Search the shallowest nodes in the search tree first.
     Args:
-        problem (PositionSearchProblem): The search problem instance, for Q1 it is an instance of PositionSearchProblem
+        problem (PositionSearchProblem): The search problem instance, for Q2 it is an instance of PositionSearchProblem
 
     Returns:
         list: A list of directions that lead to the goal ["North", "South", "East", "West"].
@@ -193,7 +200,6 @@ def breadthFirstSearch(problem):
     
     start_state = problem.getStartState()
     startNode = Node(None, start_state, None)
-    neighbours = problem.getSuccessors(start_state)  
     
     # A custom made class
     # This basically just create a reversed LinkedList
@@ -242,9 +248,61 @@ def breadthFirstSearch(problem):
     return path 
 
 def uniformCostSearch(problem):
-    """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # TODO: Problem 3
+    print (color["b"] + "Search function: Unifor Cost Search")
+    print (color["r"] + "Start:", problem.getStartState())
+    print (color["r"] +"Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    print (color["r"] + "Start's successors:", problem.getSuccessors(problem.getStartState()))
+    
+    start_state = problem.getStartState()
+    startNode = PriorityNode(None, start_state, None)
+    
+    # A custom made class
+    # This basically just create a reversed LinkedList
+    # class Node:
+    #   self.prev = AnotherNode
+    #   self.current = (x, y)
+    #   self.direction = "North"
+    #
+    
+    # For the initial neighbour
+    queue = PriorityQueue() # <--------- replaced Stack with Queue
+    queue.push(item=startNode, priority=1)
+    goal = None  
+    
+    visited = set()  # Contains tupple of visited positions on the board
+    # Perform DFS
+    while not queue.isEmpty():
+        currentNode: Node = queue.pop()
+        
+        current_state = currentNode.current
+        
+        if current_state in visited:
+            continue
+        
+        if problem.isGoalState(current_state):
+            goal = currentNode
+            break
+        
+        visited.add(current_state)
+        
+        neighbours = problem.getSuccessors(current_state)
+        for n in neighbours:
+            pos, dir, _ = n
+            node = Node(current=pos, direction=dir, prev=currentNode)
+            queue.push(node) 
+        
+
+    # Rebuilding the path
+    path = []
+    while goal.prev != None:
+        path.append(goal.direction)
+        goal= goal.prev
+    path.reverse()
+    print(color.reset)
+    print(color["g"])   
+    return path 
 
 def nullHeuristic(state, problem=None):
     """

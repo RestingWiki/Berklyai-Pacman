@@ -180,6 +180,10 @@ class PriorityQueue:
         self.count = 0
 
     def push(self, item, priority):
+        """
+            Create an entry = (priority, count, item), and push it to the heap \\
+            Count is the order that the item were inserted        
+        """
         entry = (priority, self.count, item)
         heapq.heappush(self.heap, entry)
         self.count += 1
@@ -192,9 +196,12 @@ class PriorityQueue:
         return len(self.heap) == 0
 
     def update(self, item, priority):
-        # If item already in priority queue with higher priority, update its priority and rebuild the heap.
-        # If item already in priority queue with equal or lower priority, do nothing.
-        # If item not in priority queue, do the same thing as self.push.
+        """
+            1.If item already in priority queue with higher priority, update its priority and rebuild the heap.\\
+            2.If item already in priority queue with equal or lower priority, do nothing.\\
+            3.If item not in priority queue, do the same thing as self.push.\\
+        """
+
         for index, (p, c, i) in enumerate(self.heap):
             if i == item:
                 if p <= priority:
