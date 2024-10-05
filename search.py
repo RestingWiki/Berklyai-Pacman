@@ -232,18 +232,18 @@ def breadthFirstSearch(problem):
                 node = CornerProblemNode(prev=currentNode,
                                          current=pos,
                                          direction=dir,
-                                         visited_corners=new_visited_corners) 
+                                         visited_corners=copy.deepcopy(new_visited_corners)) 
                 
 
 
-       
+        return goal
        
        
         
     if isinstance(problem, PositionSearchProblem):
         goal = BFS_position_problem(problem=problem)
     elif isinstance(problem, CornersProblem):
-        return BFS_corner_problem(problem=problem)
+        goal = BFS_corner_problem(problem=problem)
     else:
         # This works for eightpuzzle.py but I had to that file a bit
         # Since I'm returning path, and a node for deubgging
