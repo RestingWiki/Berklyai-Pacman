@@ -268,7 +268,8 @@ if __name__ == '__main__':
     print(puzzle)
 
     problem = EightPuzzleSearchProblem(puzzle)
-    path = search.breadthFirstSearch(problem)
+    #TODO: remove _
+    path, _ = search.breadthFirstSearch(problem)
     print('BFS found a path of %d moves: %s' % (len(path), str(path)))
     curr = puzzle
     i = 1
