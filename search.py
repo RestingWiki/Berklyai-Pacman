@@ -19,7 +19,6 @@ Pacman agents (in searchAgents.py).
 
 import util
 from util import *
-# from searchAgents import PositionSearchProblem
 from nguyenpanda.swan import color
 class Node:
     """
@@ -199,6 +198,24 @@ def breadthFirstSearch(problem):
     print (color["r"] +"Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print (color["r"] + "Start's successors:", problem.getSuccessors(problem.getStartState()))
     
+    from searchAgents import CornersProblem
+    from searchAgents import PositionSearchProblem
+
+
+    
+    if isinstance(problem, PositionSearchProblem):
+        return BFS_position_problem(problem=problem)
+    elif isinstance(problem, CornersProblem):
+        sys.exit(1)
+    else:
+        # This works for eightpuzzle.py but I had to that file a bit
+        # Since I'm returning path, and a node for deubgging
+        # eightpuzzle.py only need the path
+        return BFS_position_problem(problem=problem)
+        
+
+
+def BFS_position_problem(problem):
     start_state = problem.getStartState()
     startNode = Node(None, start_state, None)
     
@@ -209,7 +226,6 @@ def breadthFirstSearch(problem):
     #   self.current = (x, y)
     #   self.direction = "North"
     #
-    
     # For the initial neighbour
     queue = Queue() # <--------- replaced Stack with Queue
     queue.push(startNode)
