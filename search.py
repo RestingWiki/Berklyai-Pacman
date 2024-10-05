@@ -47,7 +47,10 @@ class PriorityNode(Node):
         super().__init__(prev, current, direction)
         self.cost: int = cost
         
-     
+class CornerProblemNode(Node):
+    def __init__(self, prev, current, direction, visited_corners):
+        super().__init__(prev, current, direction)
+        self.visited_corners: set = visited_corners     
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -192,30 +195,78 @@ def breadthFirstSearch(problem):
         list: A list of directions that lead to the goal ["North", "South", "East", "West"].
     """
     "*** YOUR CODE HERE ***"
-    # TODO: Problem 2
-    print (color["b"] + "Search function: Breadth First Search")
-    print (color["r"] + "Start:", problem.getStartState())
-    print (color["r"] +"Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print (color["r"] + "Start's successors:", problem.getSuccessors(problem.getStartState()))
-    
+    # TODO: Problem 2,5
     from searchAgents import CornersProblem
     from searchAgents import PositionSearchProblem
+    import copy
+    # I have no idea if defining a function within another function is a good idea or not
+    # But type annotation helps alot when coding soooo 
+    # Here we go
+    def BFS_corner_problem(problem:CornersProblem):
+        # Warning reduntdant code inbound!
+        start_state = problem.getStartState()
+        startNode = CornerProblemNode(None, start_state[0], None, None)
+        
+        queue = Queue()
+        queue.push(startNode)
+        goal = None
+        visited = set()
+        while not queue.isEmpty():
+            currentNode:CornerProblemNode = queue.pop()
+            
+            current_pos, cur_visited_corners = currentNode.current, currentNode.visited_corners
+            
+            # Use BOTH the position AND the set of corners that pacman visited as a key to mark  
+            if (current_pos, cur_visited_corners) in visited:
+                continue
+            
+            if problem.isGoalState(cur_visited_corners):
+                goal = currentNode
+                return goal
+            
+            # Use deepcopy to be safe
+            neighbours, new_visited_corners  = problem.getSuccessors(state=current_pos,
+                                                                     visited_corner=copy.deepcopy(cur_visited_corners))
+            for n in neighbours:
+                pos, dir, _ = n
+                node = CornerProblemNode(prev=currentNode,
+                                         current=pos,
+                                         direction=dir,
+                                         visited_corners=new_visited_corners) 
+                
 
 
-    
+       
+       
+       
+        
     if isinstance(problem, PositionSearchProblem):
-        return BFS_position_problem(problem=problem)
+        goal = BFS_position_problem(problem=problem)
     elif isinstance(problem, CornersProblem):
-        sys.exit(1)
+        return BFS_corner_problem(problem=problem)
     else:
         # This works for eightpuzzle.py but I had to that file a bit
         # Since I'm returning path, and a node for deubgging
         # eightpuzzle.py only need the path
-        return BFS_position_problem(problem=problem)
+        goal = BFS_position_problem(problem=problem)
         
-
+    # Rebuilding the path
+    path = []
+    ret_node = goal
+    while goal.prev != None:
+        path.append(goal.direction)
+        goal= goal.prev
+    path.reverse()
+    print(color.reset)
+    print(color["g"])   
+    # TODO: delete ret_node
+    return path, ret_node 
 
 def BFS_position_problem(problem):
+    print (color["b"] + "Search function: Breadth First Search")
+    print (color["r"] + "Start:", problem.getStartState())
+    print (color["r"] +"Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    print (color["r"] + "Start's successors:", problem.getSuccessors(problem.getStartState()))
     start_state = problem.getStartState()
     startNode = Node(None, start_state, None)
     
@@ -254,18 +305,19 @@ def BFS_position_problem(problem):
             queue.push(node) 
         
 
-    # Rebuilding the path
-    path = []
-    ret_node = goal
-    while goal.prev != None:
-        path.append(goal.direction)
-        goal= goal.prev
-    path.reverse()
-    print(color.reset)
-    print(color["g"])   
-    # TODO: delete ret_node
-    return path, ret_node 
+    # # Rebuilding the path
+    # path = []
+    # ret_node = goal
+    # while goal.prev != None:
+    #     path.append(goal.direction)
+    #     goal= goal.prev
+    # path.reverse()
+    # print(color.reset)
+    # print(color["g"])   
+    # # TODO: delete ret_node
+    return goal
 
+    
 def uniformCostSearch(problem):
     "*** YOUR CODE HERE ***"
     # TODO: Problem 3
