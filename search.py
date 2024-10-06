@@ -50,7 +50,7 @@ class PriorityNode(Node):
 class CornerProblemNode(Node):
     def __init__(self, prev, current, direction, visited_corners):
         super().__init__(prev, current, direction)
-        self.visited_corners: set = visited_corners     
+        self.visited_corners: tuple = visited_corners     
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -196,44 +196,46 @@ def breadthFirstSearch(problem):
     """
     "*** YOUR CODE HERE ***"
     # TODO: Problem 2,5
-    from searchAgents import CornersProblem
-    from searchAgents import PositionSearchProblem
+    from searchAgents import CornersProblem # Importing outside this function causes an error
+    from searchAgents import PositionSearchProblem # Why? I have no idea
     import copy
     # I have no idea if defining a function within another function is a good idea or not
     # But type annotation helps alot when coding soooo 
     # Here we go
-    def BFS_corner_problem(problem:CornersProblem):
+    def BFS_corner_problem(problem: CornersProblem):
         # Warning reduntdant code inbound!
-        start_state = problem.getStartState()
-        startNode = CornerProblemNode(None, start_state[0], None, None)
+        start_state, corners_state = problem.getStartState()
+        startNode = CornerProblemNode(None, start_state, None, corners_state)
         
         queue = Queue()
         queue.push(startNode)
         goal = None
         visited = set()
         while not queue.isEmpty():
-            currentNode:CornerProblemNode = queue.pop()
+            currentNode: CornerProblemNode = queue.pop()
             
-            current_pos, cur_visited_corners = currentNode.current, currentNode.visited_corners
+            current_pos, cur_corners_state = currentNode.current, currentNode.visited_corners
             
-            # Use BOTH the position AND the set of corners that pacman visited as a key to mark  
-            if (current_pos, cur_visited_corners) in visited:
+            # Use BOTH the position AND the tupple of corners that pacman visited as a key to mark  
+            if (current_pos, cur_corners_state) in visited:
                 continue
             
-            if problem.isGoalState(cur_visited_corners):
+            if problem.isGoalState(cur_corners_state):
                 goal = currentNode
                 return goal
             
-            # Use deepcopy to be safe
+            visited.add((current_pos, cur_corners_state))
+            
             neighbours, new_visited_corners  = problem.getSuccessors(state=current_pos,
-                                                                     visited_corner=copy.deepcopy(cur_visited_corners))
+                                                                     visited_corner=cur_corners_state)
             for n in neighbours:
                 pos, dir, _ = n
                 node = CornerProblemNode(prev=currentNode,
                                          current=pos,
                                          direction=dir,
-                                         visited_corners=copy.deepcopy(new_visited_corners)) 
-                
+                                         visited_corners=new_visited_corners) 
+
+                queue.push(node)
 
 
         return goal
@@ -257,6 +259,7 @@ def breadthFirstSearch(problem):
         path.append(goal.direction)
         goal= goal.prev
     path.reverse()
+    print(color["r"] + f"Path length: {len(path)}")
     print(color.reset)
     print(color["g"])   
     # TODO: delete ret_node
@@ -294,7 +297,7 @@ def BFS_position_problem(problem):
         
         if problem.isGoalState(current_pos):
             goal = currentNode
-            break
+            return goal
         
         visited.add(current_pos)
         
@@ -304,19 +307,6 @@ def BFS_position_problem(problem):
             node = Node(current=pos, direction=dir, prev=currentNode)
             queue.push(node) 
         
-
-    # # Rebuilding the path
-    # path = []
-    # ret_node = goal
-    # while goal.prev != None:
-    #     path.append(goal.direction)
-    #     goal= goal.prev
-    # path.reverse()
-    # print(color.reset)
-    # print(color["g"])   
-    # # TODO: delete ret_node
-    return goal
-
     
 def uniformCostSearch(problem):
     "*** YOUR CODE HERE ***"
@@ -367,6 +357,7 @@ def uniformCostSearch(problem):
 
     # Rebuilding the path
     path = []
+
     ret_node = goal
     while goal.prev != None:
         path.append(goal.direction)

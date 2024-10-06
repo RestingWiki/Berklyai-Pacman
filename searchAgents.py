@@ -335,31 +335,23 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        temp = list(self.corners)
-        temp.insert(0, self.startingPosition)
-        return temp
+        #
+        return self.startingPosition, (False, False, False, False)
         util.raiseNotDefined()
 
-    def isGoalState(self, state):
+    def isGoalState(self, state: tuple):
         """
         Args
-            state(set): a set containing corner that pacman visited in a state
+            state(tuple): a set containing boolean values corresponding the corners, True is visited means. Starting
+                          from ((1,1), (1,top), (right, 1), (right, top))
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        
-        # Maybe return if len(self.visited_corner == 4)
-        if state is None:
-            return False
-        
-        for v_corner in state:
-            if v_corner not in self.corners:
-                return  False
-            
-        return  True
+               
+        return  all(state)
 
 
-    def getSuccessors(self, state: tuple, visited_corner: set):
+    def getSuccessors(self, state: tuple, visited_corner: tuple):
         """
         Args
             state(int, int): The current position of pacman
@@ -376,10 +368,16 @@ class CornersProblem(search.SearchProblem):
         """
 
         successors = []
-        
+        cur_corner_tuple = visited_corner
         # Check if pacman has visited a corner
-        if state in self.corners:
-            visited_corner.add(state)
+        # Loop from (1,1) -> (1,top) -> (right, 1) -> (right, top))
+        for idx, corner in enumerate(self.corners):
+            cur_corner_list = list(visited_corner)
+            if state == corner:
+                cur_corner_list[idx] = True
+                cur_corner_tuple = tuple(cur_corner_list) # pretty inefficient but good for debugging
+                break # Premature break 
+                
         
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
@@ -389,10 +387,7 @@ class CornersProblem(search.SearchProblem):
             #   nextx, nexty = int(x + dx), int(y + dy)
             #   hitsWall = self.walls[nextx][nexty]
             x,y = state
-            
-            # This part is new logic
-            if state in self.corners:
-                visited_corner.add(state)
+        
             
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
@@ -404,7 +399,7 @@ class CornersProblem(search.SearchProblem):
             "*** YOUR CODE HERE ***"
 
         self._expanded += 1 # DO NOT CHANGE
-        return successors, visited_corner
+        return successors, cur_corner_tuple
 
     def getCostOfActions(self, actions):
         """
